@@ -21,7 +21,7 @@ public:
 
         stack<TreeNode*> s;
         TreeNode* node = root;
-        while (!s.empty() || node) {
+        while (node || !s.empty()) {
             if (node) {
                 s.push(node);
                 node = node->left;
@@ -37,12 +37,9 @@ public:
 
 };
 
-void printBinaryTree(TreeNode* root) {
-    if (root) {
-        printBinaryTree(root->left);
-        printBinaryTree(root->right);
-        cout << root->val << " ";
-    }
+void printResult(vector<int> res) {
+    for (int i: res)
+        cout << i << " ";
 }
 
 int main() {
@@ -50,6 +47,7 @@ int main() {
     TreeNode* root = new TreeNode(1);
     root->right = new TreeNode(2);
     root->right->left = new TreeNode(3);
-    printBinaryTree(root);
+    vector<int> res = sol.inorderTraversal(root);
+    printResult(res);
     cout << endl;
 }

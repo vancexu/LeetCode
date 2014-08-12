@@ -20,38 +20,39 @@ public:
         if (root == NULL) return result;
 
         stack<TreeNode*> s;
-        s.push(root);
-        TreeNode* prev = NULL;
-        while (!s.empty()) {
-            TreeNode* node = s.top();
-
-            if (!prev || prev->left == node || prev->right == node) {
-                if (node->left) {
-                    s.push(node->left);
-                } else if (node->right) {
-                    s.push(node->right);
-                } else {
-                    result.push_back(node->val);
+        TreeNode* node = root;
+        TreeNode* prev = root;
+        while (!s.empty() || node) {
+            if (node) {
+                if (node->left == prev) {
+                    prev = node;
+                    node = node->right;
+                } else if (node->right == prev) {
                     s.pop();
-                }
-            } else if (node->left == prev) {
-                if (node->right) {
-                    s.push(node->right);
-                } else {
                     result.push_back(node->val);
-                    s.pop();
+                    prev = node;
+                    if (!s.empty()) node = s.top();
+                    else node = NULL;
+                } else {
+                    s.push(node);
+                    prev = node;
+                    node = node->left;
                 }
-            } else if (node->right == prev) {
-                result.push_back(node->val);
+            } else if (node == prev->right) { // the order is so important here. IF check node == prev->left first, it would be dead loop.
+                node = s.top();
                 s.pop();
+                result.push_back(node->val);
+                prev = node;
+                if (!s.empty()) node = s.top();
+                else node = NULL;
+            } else if (node == prev->left) {
+                node = s.top();
+                prev = node;
+                node = node->right;
             }
-
-            prev = node;
         }
-
         return result;
     }
-
 };
 
 void printBinaryTree(TreeNode* root) {
