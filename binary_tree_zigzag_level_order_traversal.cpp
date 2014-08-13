@@ -15,6 +15,27 @@ struct TreeNode {
 
 class Solution {
 public:
+    vector<vector<int> > zigzagLevelOrder(TreeNode* root) {
+        vector<vector<int> > levels = levelOrder(root);
+        for (int i=0; i < levels.size(); ++i) {
+            if (i % 2 == 1) {
+                reverseArray(levels[i]);
+            }
+        }
+        return levels;
+    }
+    
+private:
+    void reverseArray(vector<int>& arr) {
+        if (arr.empty()) return;
+        int n = arr.size();
+        for (int i=0; i < n/2; ++i) {
+            int tmp = arr[i];
+            arr[i] = arr[n-i-1];
+            arr[n-i-1] = tmp;
+        }
+    }
+
     vector<vector<int> > levelOrder(TreeNode* root) {
         vector<vector<int> > result;
         if (root == NULL) return result;
@@ -44,7 +65,7 @@ int main() {
     root->left = new TreeNode(9);
     root->right = new TreeNode(20);
     root->right->left = new TreeNode(15);
-    vector<vector<int> > res = sol.levelOrder(root);
+    vector<vector<int> > res = sol.zigzagLevelOrder(root);
     for (vector<int> tmp: res) {
         for (int i: tmp) {
             cout << i << " ";
