@@ -32,7 +32,8 @@ public:
             }
             result.push_back(level);
             rootLevel = nextLevel;
-            if (isAllNULL(nextLevel)) break;
+            if (nextLevel.empty()) break;
+            // if (isAllNULL(nextLevel)) break;
         }
         return result;
     }

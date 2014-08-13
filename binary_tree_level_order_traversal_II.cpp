@@ -44,17 +44,9 @@ private:
             }
             result.push_back(level);
             rootLevel = nextLevel;
-            if (isAllNULL(nextLevel)) break;
+            if (nextLevel.empty()) break;
         }
         return result;
-    }
-
-    bool isAllNULL(vector<TreeNode*> arr) {
-        for (TreeNode* node : arr) {
-            if (node)
-                return false;
-        }
-        return true;
     }
 };
 
