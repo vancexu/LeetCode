@@ -19,19 +19,17 @@ struct ListNode {
 class Solution {
 public:
     bool hasCycle(ListNode* head) {
-       map<ListNode*, bool> visited;
-       ListNode* node = head;
-       while (node) {
-           if (visited.find(node) == visited.end()) {
-               visited[node] = true;
-           } else {
-               return true;
-           }
-           node = node->next;
-       }
-       return false;
+        if (head == NULL) return false;
+        ListNode* slow = head;
+        ListNode* fast = head;
+        while (true) {
+            slow = slow->next;
+            if (fast->next) fast = fast->next->next;
+            else return false;
+            if (slow == NULL || fast == NULL) return false;
+            if (slow == fast) return true;
+        }
     }
-
 };
 
 ListNode* makeList(vector<int> list) {
