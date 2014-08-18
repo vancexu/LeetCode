@@ -7,21 +7,34 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <unordered_map>
 
 using namespace std;
 
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
-        if (s.empty()) return 0;
-        if (s.size() == 1) return 1;
-        string sub = s.substr(0,s.size()-1);
-        size_t found = sub.rfind(s[s.size()-1]);
-        int len = lengthOfLongestSubstring(sub);
-        if (found == string::npos)
-            return max(len, int(s.size()));
-        else 
-            return max(len, int(s.substr(found+1).size()));
+        unordered_map<char, int> map;
+        int start = 0;
+        int current_longest = 0;
+        int tmp = 0;
+        int last_pos = 0;
+        for (int i=0; i < s.size(); ++i) {
+            auto found = map.find(s[i]);
+            if (found == map.end()) {
+                map[s[i]] = i;
+                tmp++;
+            } else {
+                int prev = map[s[i]];
+                if (last_pos <= prev)
+                    last_pos = prev;
+                tmp = i - last_pos;
+                map[s[i]] = i;
+            }
+            if (current_longest < tmp)
+                current_longest = tmp;
+        }
+        return current_longest;
     }
 };
 
@@ -31,5 +44,7 @@ int main() {
     cout << sol.lengthOfLongestSubstring("abcabcbb") << endl;
     cout << sol.lengthOfLongestSubstring("abcdbe") << endl;
     cout << sol.lengthOfLongestSubstring("aa") << endl;
+    cout << sol.lengthOfLongestSubstring("abcdefdgbhj") << endl;
+    cout << (sol.lengthOfLongestSubstring("wlrbbmqbhcdarzowkkyhiddqscdxrjmowfrxsjybldbefsarcbynecdyggxxpklorellnmpapqfwkhopkmco")==12) <<endl;
     cout << endl;
 }
