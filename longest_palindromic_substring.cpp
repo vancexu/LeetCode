@@ -10,38 +10,27 @@ using namespace std;
 class Solution {
 public:
     string longestPalindrome(string s) {
-        int longest = (!s.empty()) ? 0 : 1;
-        int start = 0;
-        int end = 0;
-        for (int i=0; i<s.size(); ++i) {
-            int found = s.rfind(s[i]);
-            while (found != string::npos) {
-                int n = found - i + 1;
-                if (n <= longest) break;
-                if (isPalindrome(s, i, found)) {
-                    if (longest < n) {
-                        longest = n;
-                        start = i;
-                        end = found;
-                    }
-                    break;
-                } else {
-                    found = s.rfind(s[i], found-1);
-                }
-            }
+        string longest = (s.empty()) ? "" : s.substr(0,1);
+        for (int i=0; i < s.size()-1; ++i) {
+            string s1 = expandAroundCenter(s, i, i);
+            if (longest.size() < s1.size()) 
+                longest = s1;
+            string s2 = expandAroundCenter(s, i, i+1);
+            if (longest.size() < s2.size())
+                longest = s2;
         }
-        return s.substr(start, end-start+1);
+        return longest;
     }
 
 private:
-    bool isPalindrome(string& s, int low, int high) {
-        int n = high - low + 1;
-        if (n < 0) return false;
-        for (int i=low, j=high; i < low+n/2; ++i,--j) {
-            if (s[i] != s[j])
-                return false;
+    string expandAroundCenter(string& s, int c1, int c2) {
+        int l = c1;
+        int r = c2;
+        while ((l >= 0) && (r <= s.size()-1) && (s[l] == s[r])) {
+            l--;
+            r++;
         }
-        return true;
+        return s.substr(l+1, r-l-1);
     }
 };
 
@@ -50,6 +39,7 @@ int main() {
     cout << sol.longestPalindrome("abcdedcghic") << endl;
     cout << sol.longestPalindrome("abcdcbqwertyytre") << endl;
     cout << sol.longestPalindrome("abc") << endl;
+    cout << sol.longestPalindrome("a") << endl;
     cout << sol.longestPalindrome("abac") << endl;
     cout << sol.longestPalindrome("aaaabaaa") << endl;
     cout << (sol.longestPalindrome("civilwartestingwhetherthatnaptionoranynartionsoconceivedandsodedicatedcanlongendureWeareqmetonagreatbattlefiemldoftzhatwarWehavecometodedicpateaportionofthatfieldasafinalrestingplaceforthosewhoheregavetheirlivesthatthatnationmightliveItisaltogetherfangandproperthatweshoulddothisButinalargersensewecannotdedicatewecannotconsecratewecannothallowthisgroundThebravelmenlivinganddeadwhostruggledherehaveconsecrateditfaraboveourpoorponwertoaddordetractTgheworldadswfilllittlenotlenorlongrememberwhatwesayherebutitcanneverforgetwhattheydidhereItisforusthelivingrathertobededicatedheretotheulnfinishedworkwhichtheywhofoughtherehavethusfarsonoblyadvancedItisratherforustobeherededicatedtothegreattdafskremainingbeforeusthatfromthesehonoreddeadwetakeincreaseddevotiontothatcauseforwhichtheygavethelastpfullmeasureofdevotionthatweherehighlyresolvethatthesedeadshallnothavediedinvainthatthisnationunsderGodshallhaveanewbirthoffreedomandthatgovernmentofthepeoplebythepeopleforthepeopleshallnotperishfromtheearth") == "ranynar") << endl;
