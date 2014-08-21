@@ -14,14 +14,9 @@ public:
         unordered_map<char,int> needToFind;
         unordered_map<char,int> hasFound;
         for (char ch: T) {
-            if (needToFind.count(ch) == 0) {
-                needToFind[ch] = 1;
-            } else {
-                needToFind[ch] += 1;
-            }
-        }
-        for (char ch: T)
+            needToFind[ch]++;
             hasFound[ch] = 0;
+        }
         int found = 0;
         int begin = 0;
         int end = 0;
@@ -35,17 +30,15 @@ public:
 
             if (found == T.size()) {
                 bool con1 = (needToFind.count(S[begin]) == 0);
-                bool con2 = false;
-                if (!con1) // needToFind[ch] will create a new element, so check exist first.
-                    con2 = (hasFound[S[begin]] > needToFind[S[begin]]);
+                // Be careful for next line! Check item exists first, then use map; or dict will create new item.
+                bool con2 = (!con1) ? (hasFound[S[begin]] > needToFind[S[begin]]) : false;
                 while (con1 || con2) {
                     if (con2) {
                         hasFound[S[begin]]--;
                     }
                     begin++;
                     con1 = (needToFind.count(S[begin]) == 0);
-                    if (!con1) con2 = (hasFound[S[begin]] > needToFind[S[begin]]);
-                    else con2 = false;
+                    con2 = (!con1) ? (hasFound[S[begin]] > needToFind[S[begin]]) : false;
                 }
 
                 if (res.size() > end-begin+1) {
