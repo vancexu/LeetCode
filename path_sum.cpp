@@ -15,19 +15,11 @@ struct TreeNode {
 class Solution {
 public:
     bool hasPathSum(TreeNode* root, int sum) {
-        if (root == NULL) 
-            return (sum == 0) ? true: false;
+        if (root == NULL) return false;
+        if (root->left == NULL && root->right == NULL) return (sum == root->val) ? true : false;
         return hasPathSum(root->left, sum - root->val) || hasPathSum(root->right, sum - root->val);
     }
 };
-
-void printBinaryTree(TreeNode* root) {
-    if (root) {
-        printBinaryTree(root->left);
-        printBinaryTree(root->right);
-        cout << root->val << " ";
-    }
-}
 
 int main() {
     Solution sol;
@@ -36,7 +28,7 @@ int main() {
     root->left->right = new TreeNode(2);
     root->right = new TreeNode(2);
     root->right->left = new TreeNode(3);
-    cout << (true == sol.hasPathSum(root, 5)) << endl;
+    cout << (true == sol.hasPathSum(root, 6)) << endl;
     cout << (true == sol.hasPathSum(root, 7)) << endl;
     cout << (false == sol.hasPathSum(root, 0)) << endl;
     cout << endl;
