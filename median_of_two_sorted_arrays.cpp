@@ -9,32 +9,46 @@ using namespace std;
 class Solution {
 public:
     double findMedianSortedArrays(int A[], int m, int B[], int n) {
-        if (m < n) return findMedianSortedArrays(A, m, B, n, 0, m-1);
-        else return findMedianSortedArrays(B, n, A, m, 0, n-1);
+        if ((m+n)%2 == 1)
+            return findKthElement(A, m, B, n, (m+n)/2+1);
+        else {
+            int m1 = findKthElement(A, m, B, n, (m+n)/2);
+            int m2 = findKthElement(A, m, B, n, (m+n)/2+1);
+            return (m1+m2) / 2.0;
+        }
     }
 
-    double findMedianSortedArrays(int A[], int m, int B[], int n, int low, int high) {
-        if (low > high) 
-            return findMedianSortedArrays(B, n, A, m, max(0, (m+n)/2-m), min(n, (m+n)/2));
-        int i = (low + high) / 2;
-        int j = (m + n) / 2 - i - 1;
-        if (j >= 0 && A[i] < B[j])
-            return findMedianSortedArrays(A, m, B, n, i+1, high);
-        else if (j < n-1 && A[i] > B[j+1])
-            return findMedianSortedArrays(A, m, B, n, low, i-1);
-        else {
-            cout << "i: " << i << " j: " << j << endl; 
-            if ((m+n)%2 == 1) return A[i];
-            else if (j < 0) return (A[i] + A[i-1]) / 2.0;
-            else return (A[i] + B[j]) / 2.0;
-        }
+private:
+    /*
+     * Find the kth smallest element in merged sorted array A and B.
+     * assume m <= n, m >= 0, n >= 0, k > 0;
+     */
+    double findKthElement(int A[], int m, int B[], int n, int k) {
+        if (m > n) return findKthElement(B, n, A, m, k); // A is shorter than B
+        if (m == 0) return B[k-1]; // ignore A
+        if (k == 1) return min(A[0], B[0]); 
+        
+        int pa = min(m, k/2);
+        int pb = k - pa;
+        if (A[pa-1] < B[pb-1]) // kth element not in A[0,pa)
+            return findKthElement(A+pa, m-pa, B, n, k-pa);
+        else if (A[pa-1] > B[pb-1]) // kth element not in B[0,pb)
+            return findKthElement(A, m, B+pb, n-pb, k-pb);
+        else // A[pa] == B[pb]
+            return A[pa-1];
     }
 };
 
 int main() {
     Solution sol;
-    int A[] = {};
-    int B[] = {2,3};
-    cout << sol.findMedianSortedArrays(A, 0, B, 2) << endl;
+    int A1[] = {1,2,3,4};
+    int B1[] = {3,4,5,6};
+    cout << (3.5 == sol.findMedianSortedArrays(A1, 4, B1, 4)) << endl;
+    int A2[] = {};
+    int B2[] = {3,4,5,6};
+    cout << (4.5 == sol.findMedianSortedArrays(A2, 0, B2, 4)) << endl;
+    int A3[] = {};
+    int B3[] = {3,4,5};
+    cout << (4.0 == sol.findMedianSortedArrays(A3, 0, B3, 3)) << endl;
     cout << endl;
 }
