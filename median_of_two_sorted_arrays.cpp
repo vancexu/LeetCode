@@ -28,7 +28,7 @@ private:
         if (m == 0) return B[k-1]; // ignore A
         if (k == 1) return min(A[0], B[0]); 
         
-        int pa = min(m, k/2);
+        int pa = min(m, k/2); // the number of elements in A
         int pb = k - pa;
         if (A[pa-1] < B[pb-1]) // kth element not in A[0,pa)
             return findKthElement(A+pa, m-pa, B, n, k-pa);
