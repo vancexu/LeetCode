@@ -3,6 +3,8 @@
  * Note:
  *   Elements in a quadruplet (a,b,c,d) must be in non-descending order. (ie, a ≤ b ≤ c ≤ d)
  *   The solution set must not contain duplicate quadruplets.
+ *
+ *   Thanks to @KavinYao for helpping me with these sum series problems.
  */
 
 #include <iostream>
@@ -17,26 +19,36 @@ public:
         if (num.size() < 4) return {};
         vector<vector<int>> res;
         sort(num.begin(), num.end());
-        for (auto it=num.begin(); it < num.end()-3; it=upper_bound(it,num.end()-3,*it)) {
-            vector<vector<int>> three = threeSum(num, target-*it, it-num.begin()+1);
-            for (int i=0; i < three.size(); ++i)
-                three[i].insert(three[i].begin(), *it);
-            res.insert(res.end(), three.begin(), three.end());
-        }
-        return res;
-    }
+        int quad[4];
+        const int n = num.size();
 
-private:
-    vector<vector<int> > threeSum(vector<int> &num, int target, int start) {
-        if (num.size() < 3) return {};
-        vector<vector<int>> res;
-        sort(num.begin(), num.end());
-        auto end = num.end();
-        for (auto first = num.begin()+start; first < end-2; first = upper_bound(first, end-2, *first)) {
-            for (auto second = first+1; second < end-1; second = upper_bound(second, end-1, *second)) {
-                int val = target - *first - *second;
-                if (binary_search(second+1, end, val)) 
-                    res.push_back({*first, *second, val});
+        for (int first=0; first < n-3; ++first) {
+            // skip duplicates
+            if (first > 0 && num[first-1] == num[first]) continue;
+
+            for (int second=first+1; second < n-2; ++second) {
+                // skip duplicates
+                if (second > first+1 && num[second-1] == num[second]) continue;
+
+                int third = second + 1;
+                int fourth = n - 1;
+                while (third < fourth) {
+                    int sum = num[third] + num[fourth];
+                    int newTarget = target - num[first] - num[second];
+                    if (sum == newTarget) {
+                        res.push_back({num[first], num[second], num[third], num[fourth]});
+                        do {
+                            third++;
+                        } while (third < fourth && num[third-1] == num[third]);
+                        do {
+                            fourth--;
+                        } while (fourth > third && num[fourth] == num[fourth+1]);
+                    } else if (sum < newTarget) {
+                        third++;
+                    } else {
+                        fourth--;
+                    }
+                }
             }
         }
         return res;
