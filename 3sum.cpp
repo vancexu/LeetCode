@@ -6,8 +6,7 @@
 
 #include <iostream>
 #include <vector>
-#include <unordered_map>
-#include <set>
+#include <algorithm>
 
 using namespace std;
 
@@ -16,49 +15,16 @@ public:
     vector<vector<int> > threeSum(vector<int> &num) {
         if (num.size() < 3) return {};
         vector<vector<int>> res;
-        set<vector<int>> exists;
         sort(num.begin(), num.end());
-        for (int i = 0; i < num.size()-2; ++i) {
-            vector<vector<int>> lastTwoNumsIdxes = twoSum(num, 0 - num[i], i+1);
-            for (auto lastTwoNumsIdx : lastTwoNumsIdxes) {
-                if (i < lastTwoNumsIdx[0]) {
-                    int second = num[lastTwoNumsIdx[0]];
-                    int third = num[lastTwoNumsIdx[1]];
-                    vector<int> tmp = {num[i], second, third};
-                    if (!exists.count(tmp)) {
-                        res.push_back(tmp);
-                        exists.insert(tmp);
-                    }
-                }
+        auto end = num.end();
+        for (auto first = num.begin(); first < end-2; first = upper_bound(first, end-2, *first)) {
+            for (auto second = first+1; second < end-1; second = upper_bound(second, end-1, *second)) {
+                int val = 0 - *first - *second;
+                if (binary_search(second+1, end, val)) 
+                    res.push_back({*first, *second, val});
             }
         }
         return res;
-    }
-
-private:    
-    vector<vector<int>> twoSum(vector<int> &numbers, int target, int start) {
-        vector<vector<int>> result;
-        unordered_map<int, int> map; // map[number] = index;
-        for (int i = 0; i < numbers.size(); ++i)
-            map[numbers[i]] = i;
-        for (int i = start; i < numbers.size()-1; ++i) {
-            vector<int> res;
-            int second = target - numbers[i];
-            if (map.count(second) == 1) {
-                if (i < map[second]) {
-                    res.push_back(i);
-                    res.push_back(map[second]);
-                    result.push_back(res);
-                }
-            }
-        }
-        return result;
-    }
-
-    void printVector(vector<int> vec) {
-        for (int item : vec) 
-            cout << item << " ";
-        cout << endl;
     }
 };
 
@@ -70,7 +36,7 @@ void printVector(vector<int> vec) {
 
 int main() {
     Solution sol;
-    vector<int> numbers = {-2,0,1,1,2};
+    vector<int> numbers = {1,2,-2,-1};
     vector<vector<int>> res = sol.threeSum(numbers);
     for (auto vec : res) {
         printVector(vec); 
