@@ -20,7 +20,7 @@ public:
         if (candidates.empty()) return {};
         vector<int> tmpVec;
         vector<vector<int> > result;
-        // sort(candidates.begin(), candidates.end(), greater<int>()); // This would be faster, but the system wrongly declined the answer.
+        sort(candidates.begin(), candidates.end());
         combinationSumAux(candidates, target, result, tmpVec, 0);
         return result;
     }

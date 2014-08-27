@@ -14,7 +14,6 @@
 
 #include <iostream>
 #include <vector>
-#include <map>
 
 using namespace std;
 
@@ -26,11 +25,7 @@ public:
         vector<vector<int> > result;
         sort(num.begin(), num.end());
         combinationSumAux(num, target, result, tmpVec, 0);
-        return removeDuplicates(result);
-        /*
-        removeDuplicates(result);
         return result;
-        */
     }
 
 private:
@@ -44,23 +39,10 @@ private:
         for (int i = level; i < candidates.size(); ++i) {
             int val = candidates[i];
             tmpVec.push_back(val);
-            vector<int> newCan(candidates.begin(), candidates.end());
-            newCan.erase(newCan.begin()+i);
-            combinationSumAux(newCan, target - val, result, tmpVec, i);
+            combinationSumAux(candidates, target - val, result, tmpVec, i+1);
             tmpVec.pop_back();
+            while (i < candidates.size()-1 && candidates[i] == candidates[i+1]) i++;
         }
-    }
-
-    vector<vector<int>> removeDuplicates(vector<vector<int>>& arrays) {
-        vector<vector<int>> result;
-        map<vector<int>, bool> map;
-        for (auto vec : arrays) {
-            if (map.count(vec) == 0) {
-                result.push_back(vec);
-                map[vec] = true;
-            }
-        }
-        return result;
     }
 };  
 
