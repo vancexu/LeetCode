@@ -18,15 +18,23 @@ public:
     bool wordBreak(string s, unordered_set<string> &dict) {
         if (dict.empty()) return false;
         if (s.empty()) return true;
-        bool res = false;
-        for (string word : dict) {
-            int it = s.find(word);
-            if (it != string::npos) {
-                res = wordBreak(s.erase(it, word.size()), dict);
-                if (res) break;
+        if (s.size() == 1) return dict.count(s);
+        // inDict[i] = true iff s.sub(0,i+1) in dict
+        vector<bool> inDict(s.size(), false);
+        inDict[0] = dict.count(s.substr(0,1));
+        for (int i = 1; i < s.size(); ++i) {
+            inDict[i] = dict.count(s.substr(0, i+1));
+            if (inDict[i]) continue;
+            // looking for whether partition existed
+            for (int k = 0; k < i; ++k) {
+                bool res = inDict[k] && dict.count(s.substr(k+1,i-k));
+                if (res) {
+                    inDict[i] = true;
+                    break;
+                }
             }
         }
-        return res;
+        return inDict[s.size()-1];
     }
 };
 
