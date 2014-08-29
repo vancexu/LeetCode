@@ -22,13 +22,16 @@ public:
         if (s.empty()) return {};
         vector<string> res;
         vector<string> tempVec;
-        vector<bool> inDict(s.size()+1, true); // inDict[i] = true iff s.substr(0, i+1) in dict
-        wordBreakAux(s, dict, 0, tempVec, res, inDict);
+        // visited is only used to avoid unnessary recursive call. 
+        // Use size+1 (instead of size) to avoid out of index error when used.
+        // visited[i] = false if s.substr(i) won't lead to a word break.
+        vector<bool> visited(s.size()+1, true); 
+        wordBreakAux(s, dict, 0, tempVec, res, visited);
         return res;
     }
 
 private:
-    void wordBreakAux(string s, unordered_set<string>& dict, int start, vector<string>& tempVec, vector<string>& res, vector<bool>& inDict) {
+    void wordBreakAux(string s, unordered_set<string>& dict, int start, vector<string>& tempVec, vector<string>& res, vector<bool>& visited) {
         if (start == s.size()) {
             res.push_back(join(tempVec));
             return;
@@ -36,14 +39,14 @@ private:
         for (int i = start; i < s.size(); ++i) {
             string word = s.substr(start, i-start+1);
             //cout << "WORD: " << word << endl;
-            if (dict.count(word) && inDict[i+1]) {
+            if (dict.count(word) && visited[i+1]) {
                 int previousResultSize = res.size();
                 tempVec.push_back(word);
-                wordBreakAux(s, dict, i+1, tempVec, res, inDict);
+                wordBreakAux(s, dict, i+1, tempVec, res, visited);
                 tempVec.pop_back();
-                // update inDict
+                // update visited
                 if (res.size() == previousResultSize) 
-                    inDict[i+1] = false;
+                    visited[i+1] = false;
             }
         }
     }
@@ -72,8 +75,8 @@ int main() {
     unordered_set<string> dict1 = {"cat", "cats", "and", "sand", "dog"};
     unordered_set<string> dict2 = {"a","aa","aaa","aaaa","aaaaa","aaaaaa","aaaaaaa","aaaaaaaa","aaaaaaaaa","aaaaaaaaaa"};
     vector<string> res1 = sol.wordBreak(s1, dict1);
-    vector<string> res2 = sol.wordBreak(s2, dict2);
+    //vector<string> res2 = sol.wordBreak(s2, dict2);
     printVec(res1);
-    printVec(res2);
+    //printVec(res2);
     cout << endl;
 }
