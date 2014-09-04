@@ -10,6 +10,13 @@ using namespace std;
 
 class Solution {
 public:
+    /*
+     * For each bar, compute the largest rectangle area with its height.
+     * To get the width, using a stack.
+     * By iterate each bar and push bar index to stack only in non-descreasing order of bar height,
+     * the right end is the iterator, 
+     * the left end is the top of the stack.
+     */
     int largestRectangleArea(vector<int> &height) {
         if (height.empty()) return 0;
 
