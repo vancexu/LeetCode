@@ -32,7 +32,7 @@ int main() {
     vector<int> prices2 = {2,1,1};
     vector<int> prices3 = {1,2};
     vector<int> prices4 = {2,1};
-    cout << (5 == sol.maxProfit(prices)) << endl;
+    cout << (5 == sol.maxProfit(prices)) << endl; // not 7
     cout << (0 == sol.maxProfit(prices2)) << endl;
     cout << (1 == sol.maxProfit(prices3)) << endl;
     cout << (0 == sol.maxProfit(prices4)) << endl;
