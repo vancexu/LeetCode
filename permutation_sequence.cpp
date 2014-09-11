@@ -24,48 +24,30 @@ class Solution {
 public:
     string getPermutation(int n, int k) {
         if (k == 0) return "";
-        vector<int> nums;
-        for (int i = 1; i <= n; ++i)
-            nums.push_back(i);
-        vector<int> res;
-        vector<int> tmpVec(n, 0);
-        unordered_set<int> prev;
-        permuteAux(nums, res, tmpVec, 0, prev, k);
-        return join(res);
-    }
-
-private:
-    string join(vector<int>& vec) {
-        string res = "";
-        for (int item : vec)
-            res += to_string(item);
+        string candidates = "123456789";
+        candidates = candidates.substr(0,n);
+        string res(n, ' ');
+        for (int i = 0; i < n; ++i) {
+            int cases = fac(n-i-1);
+            int index = (k-1) / cases;
+            res[i] = candidates[index];
+            candidates.erase(index,1);
+            k = k - index * cases;
+        }
         return res;
     }
 
-    // Using similiar method as Combinations.cpp
-    // HOWEVER, even though it passed LeetCode tests, it assumes nums has no duplicate numbers.
-    void permuteAux(vector<int>& nums, vector<int>& res,
-            vector<int>& tmpVec, int level, unordered_set<int>& prev, int& k) {
-        if (level == nums.size()) {
-            k--;
-            if (k == 0) 
-                res = tmpVec;
-            return;
-        }
-        for (int i = 0; i < nums.size(); ++i) {
-            if (prev.count(nums[i]))
-                continue;
-
-            tmpVec[level] = nums[i];
-            prev.insert(nums[i]);
-            permuteAux(nums, res, tmpVec, level+1, prev, k);
-            prev.erase(nums[i]);
-        }
+private:
+    int fac(int n) {
+        int res = 1;
+        for (int i = 2; i <= n; ++i)
+            res *= i;
+        return res;
     }
 };
 
 int main() {
     Solution sol;
-    cout << sol.getPermutation(3,4) << endl;
+    cout << sol.getPermutation(4,19) << endl;
     cout << endl;
 }
