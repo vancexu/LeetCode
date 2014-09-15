@@ -16,22 +16,22 @@ using namespace std;
 class Solution {
 public:
     int numDistinct(string S, string T) {
-        if (S.empty()) return 0;
-        int res = 0;
-        numDistinctAux(S, T, res);
-        return res;
-    }
-
-    void numDistinctAux(string s, string t, int& res) {
-        if (t.empty()) {
-            res++;
-        } else {
-            for (int i = 0; i < s.size(); ++i) {
-                if (s[i] == t[0]) {
-                    numDistinctAux(s.substr(i+1), t.substr(1), res);
+        int N = T.size();
+        int M = S.size();
+        // mat[i][j] is num of distinct seq of T[0:i] in S[0:j];
+        vector<vector<int>> mat(N+1, vector<int>(M+1, 0));
+        
+        for (int i = 0; i < N+1; ++i) mat[i][0] = 0;
+        for (int i = 0; i < M+1; ++i) mat[0][i] = 1;
+        for (int i = 1; i <= N; ++i) {
+            for (int j = 1; j <= M; ++j) {
+                mat[i][j] = mat[i][j-1];
+                if (T[i-1] == S[j-1]) {
+                    mat[i][j] += mat[i-1][j-1];
                 }
             }
         }
+        return mat[N][M];
     }
 };
 
