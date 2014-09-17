@@ -24,26 +24,25 @@ public:
         if (triangle.empty()) return 0;
         if (triangle.size() == 1) return triangle[0][0];
         const int M = triangle.size();
-        vector<vector<int>> mat;
-        for (int i = 1; i <= M; ++i) {
-            vector<int> vec(i,0);
-            mat.push_back(vec);
-        }
-        mat[0][0] = triangle[0][0];
+        vector<int> prev(1, triangle[0][0]);
+        vector<int> current(2, 0);
         for (int i = 1; i < M; ++i) {
-            for (int j = 0; j <= i; ++j) {
+            for (int j = 0; j <=i; ++j) {
                 if (j == 0) {
-                    mat[i][j] = mat[i-1][j] + triangle[i][j];
+                    current[0] = prev[0] + triangle[i][j];
                 } else if (j == i) {
-                    mat[i][j] = mat[i-1][j-1] + triangle[i][j];
+                    current[j] = prev[j-1] + triangle[i][j];
                 } else {
-                    mat[i][j] = min(mat[i-1][j-1], mat[i-1][j]) + triangle[i][j];
+                    current[j] = min(prev[j-1], prev[j]) + triangle[i][j];
                 }
             }
+            prev.swap(current);
+            vector<int> next(i+2,0);
+            current.swap(next);
         }
-        int res = mat[M-1][0];
+        int res = prev[0];
         for (int i = 1; i < M; ++i) {
-            res = min(res, mat[M-1][i]);
+            res = min(res, prev[i]);
         }
         return res;
     }
@@ -55,7 +54,6 @@ public:
             cout << endl;
         }
     }
-
 };
 
 int main() {
