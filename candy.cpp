@@ -18,41 +18,35 @@ public:
         if (ratings.empty()) return 0;
         int N = ratings.size();
         if (N == 1) return 1;
-        vector<int> nums(N, 0); // num of candies for each child
-        candy(nums, ratings, 0, N-1); 
-        int res = 0;
-        for (int n : nums)
-            res += n;
-        return res;
-    }
 
-    void candy(vector<int>& nums, vector<int>& ratings, 
-               int low, int high) {
-        if (low > high) {
-            return;
+        // num of minimal candies for each child
+        vector<int> left(N, 1); 
+        vector<int> right(N, 1); 
+
+        for (int i = 1; i < N; ++i) {
+            if (ratings[i] > ratings[i-1])
+                left[i] = left[i-1] + 1;
         }
-        int min_rating = ratings[low];
-        int min_index = low;
-        for (int i = low; i <= high; ++i) {
-            if (min_rating > ratings[i]) {
-                min_index = i;
-                min_rating = ratings[i];
-            }
+
+        for (int i = N-2; i >= 0; --i) {
+            if (ratings[i] > ratings[i+1])
+                right[i] = right[i+1] + 1;
         }
-        if (min_index == 0) 
-            nums[min_index] = nums[min_index+1] + 1;
-        else if (min_index == ratings.size()-1)
-            nums[min_index] = nums[min_index-1] + 1;
-        else
-            nums[min_index] = max(nums[min_index-1], nums[min_index+1]) + 1;
-        candy(nums, ratings, low, min_index-1);
-        candy(nums, ratings, min_index+1, high);
+
+        int res = 0;
+        for (int i = 0; i < N; ++i)
+            res += max(left[i], right[i]);
+        return res;
     }
 };
 
 int main() {
     Solution sol;
     vector<int> ratings = {8,9,3,5,1,2,7,6,10};
-    cout << sol.candy(ratings);
+    vector<int> ratings2 = {1,2,2};
+    vector<int> ratings3 = {2,2,1};
+    cout << sol.candy(ratings) << endl;
+    cout << sol.candy(ratings2) << endl;
+    cout << sol.candy(ratings3) << endl;
     cout << endl;
 }
